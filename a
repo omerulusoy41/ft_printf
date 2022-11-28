@@ -1,6 +1,0 @@
-#include <stdio.h>
-int main(){
-    int c = 2;
-    printf(%dn,ft_printf(123 %c %d %i %x %X %p %u %s %%n,'A',-67,89,1002,1002,&c,-12,yumurta));
-    printf(%d,printf(123 %c %d %i %x %X %p %u %s %%n,'A',-67,89,1002,1002,&c,-12,yumurta));
-}

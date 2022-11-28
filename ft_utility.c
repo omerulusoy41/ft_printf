@@ -6,7 +6,7 @@
 /*   By: oulusoy <oulusoy@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 14:25:44 by oulusoy           #+#    #+#             */
-/*   Updated: 2022/11/24 16:20:42 by oulusoy          ###   ########.fr       */
+/*   Updated: 2022/11/28 21:58:31 by oulusoy          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,43 +31,45 @@ int	ft_putstr(char *arr)
 
 int	ft_len_num(long nb, int base, int len)
 {
+	if (nb == 0)
+		return (1);
 	while (nb > 0 && ++len)
 		nb /= base;
 	return (len);
 }
 
-int	ft_rec_num(long nb, int base, char x)
+int	ft_d(int nb, int sum)
 {
-	if (nb >= base)
-		ft_rec_num (nb / base, base, x);
-	if (x == 'x')
-		ft_putchar("0123456789abcdef"[nb % base]);
-	else
-		ft_putchar("0123456789ABCDEF"[nb % base]);
-	return (ft_len_num(nb, base, 0));
+	if (nb < 0)
+	{
+		if (nb == -2147483648)
+			return (ft_putstr("-2147483648"));
+		nb = -nb;
+		ft_putchar('-');
+		sum = 1;
+	}
+	if (nb >= 10)
+		ft_d(nb / 10, sum);
+	ft_putchar("0123456789"[nb % 10]);
+	return (sum + ft_len_num(nb, 10, 0));
 }
 
-int	ft_calculate(char c, va_list args,long value)
+int	ft_calculate(char c, va_list args)
 {
 	if (c == 'c')
 		return (ft_putchar(va_arg(args, int)));
 	if (c == 'd' || c == 'i')
-	{
-		value = va_arg(args, long);
-		if ((int)value < 0)
-			return (ft_putchar('-') + ft_rec_num(-1 * ((int)value), 10, 'x'));
-		else
-			return ft_rec_num(value, 10, 'x');
-	}
+		return (ft_d(va_arg(args, int), 0));
 	else if (c == 's')
 		return (ft_putstr(va_arg(args, char *)));
 	else if (c == '%')
 		return (ft_putchar('%'));
 	else if (c == 'p')
-		return (ft_putstr("0x") + ft_rec_num(va_arg(args, unsigned long long), 16, 'x'));
+		return (ft_putstr("0x") + \
+			ft_rec_hex(va_arg(args, unsigned long), 'x'));
 	else if (c == 'X' || c == 'x')
-		return (ft_rec_num(va_arg(args, unsigned int), 16, c));
+		return (ft_rec_hex(va_arg(args, unsigned int), c));
 	else if (c == 'u')
-		return (ft_rec_num(va_arg(args, unsigned int), 10, 'x'));
-	return (-1);
+		return (ft_uint(va_arg(args, unsigned int)));
+	return (1);
 }
